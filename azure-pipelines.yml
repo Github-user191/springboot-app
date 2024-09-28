@@ -31,17 +31,14 @@ stages:
         mavenAuthenticateFeed: false
         effectivePomSkip: false
         sonarQubeRunAnalysis: false
+    - task: Bash@3
+      displayName: List current directory
+      inputs:
+        targetType: 'inline'
+        script: 'ls -la'
     - task: Docker@2
-      displayName: Build an image
       inputs:
-        command: build
-        dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
-        repository: $(imageName)
-        tags: |
-          $(tag)
-    - task: ArtifactoryDocker@1
-      inputs:
-        command: 'push'
-        artifactoryService: 'Art_SVC_conn'
-        targetRepo: 'docker-local'
-        imageName: '$(imageName):$(tag)'
+        containerRegistry: 'devopsshackacr'
+        repository: 'mytestrepo'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
